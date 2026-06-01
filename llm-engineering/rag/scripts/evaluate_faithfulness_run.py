@@ -1,9 +1,9 @@
 from rag.sample_documents import SAMPLE_DOCUMENTS
-from rag.pipeline import RAGPipeline
+from rag.pipeline.factory import build_pipeline
 from rag.evaluation import evaluate_faithfulness
 
 if __name__ == "__main__":
-    pipeline = RAGPipeline(embedder_type="tfidf")
+    pipeline = build_pipeline(embedder="tfidf")
     pipeline.index(SAMPLE_DOCUMENTS)
 
     queries = [

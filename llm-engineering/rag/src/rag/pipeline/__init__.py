@@ -1,13 +1,13 @@
 from rag.pipeline.base import RAGPipeline
+from rag.pipeline.vectordb import VectorDBPipeline
+from rag.pipeline.conversational import ConversationalRAGPipeline
+from rag.pipeline.factory import build_pipeline, build_hybrid_pipeline
 
 
 def __getattr__(name):
     if name == "ChromaRAGPipeline":
         from rag.pipeline.chromadb import ChromaRAGPipeline
         return ChromaRAGPipeline
-    if name == "ConversationalRAGPipeline":
-        from rag.pipeline.conversational import ConversationalRAGPipeline
-        return ConversationalRAGPipeline
     if name == "QdrantRAGPipeline":
         from rag.pipeline.qdrant import QdrantRAGPipeline
         return QdrantRAGPipeline
@@ -22,8 +22,11 @@ def __getattr__(name):
 
 __all__ = [
     "RAGPipeline",
-    "ChromaRAGPipeline",
+    "VectorDBPipeline",
     "ConversationalRAGPipeline",
+    "build_pipeline",
+    "build_hybrid_pipeline",
+    "ChromaRAGPipeline",
     "QdrantRAGPipeline",
     "HybridRAGPipeline",
     "PostgresRAGPipeline",

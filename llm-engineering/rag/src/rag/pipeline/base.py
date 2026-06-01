@@ -3,55 +3,35 @@ from rag.prompts import build_attributed_rag_prompt
 from rag.retrieval import search
 from rag.generators import ClaudeGenerator, SimpleGenerator
 from rag.embeddings import TFIDFEmbeder, BinaryBOWEmbeder
+from rag.embeddings.base import Embeder
+from rag.generators.base import Generator
 
 
 class RAGPipeline:
-    def __init__(self, chunk_size=512, overlap=50, top_k=5, generator_type="simple",
-                 embedder_type="tfidf", chunker_type="standard"):
+    def __init__(
+        self,
+        embedder: Embeder | None = None,
+        generator: Generator | None = None,
+        chunker: Chunker | ParentChildChunker | None = None,
+        *,
+        top_k: int = 5,
+        chunk_size: int = 512,
+        overlap: int = 50,
+    ):
         self.top_k = top_k
-        self.generator_type = generator_type
-        self.embedder_type = embedder_type
-        self.chunker_type = chunker_type
+        self.chunker = chunker or Chunker(chunk_size, overlap)
+        self.embedder = embedder or TFIDFEmbeder()
+        self.generator = generator or SimpleGenerator()
 
-        if self.chunker_type == "parent_child":
-            parent_size = chunk_size
-            parent_overlap = overlap
-            self.chunker = ParentChildChunker(
-                parent_size=parent_size,
-                parent_overlap=parent_overlap,
-                child_size=max(32, parent_size // 4),
-                child_overlap=max(5, parent_overlap // 5),
-            )
-        else:
-            self.chunker = Chunker(chunk_size, overlap)
-
-        if self.embedder_type == "bow":
-            self.embedder = BinaryBOWEmbeder(self.chunker)
-        elif self.embedder_type == "sentence_transformers":
-            from rag.embeddings import SentenceTransformerEmbeder
-            self.embedder = SentenceTransformerEmbeder(self.chunker)
-        elif self.embedder_type == "bm25":
-            from rag.embeddings import BM25Embeder
-            self.embedder = BM25Embeder(self.chunker)
-        else:
-            self.embedder = TFIDFEmbeder(self.chunker)
-
-        if self.generator_type == "claude":
-            self.generator = ClaudeGenerator()
-        else:
-            self.generator = SimpleGenerator()
-
-        self.chunks = []
-        self.sources = []
-        self.metadatas = []
-        self.embeddings = []
-        self.vocab = []
-        self.idf = []
+        self.chunks: list[str] = []
+        self.sources: list[str] = []
+        self.metadatas: list[dict] = []
+        self.embeddings: list[list[float]] = []
+        self.vocab: list[str] = []
+        self.idf: list[float] = []
 
     def _prepare_chunks_and_sources(self, documents, source_names=None):
-        all_chunks = []
-        sources = []
-        metadatas = []
+        all_chunks, sources, metadatas = [], [], []
 
         if source_names is None or len(source_names) != len(documents):
             default_sources = ["refund-policy.md", "product-overview.md", "security.md", "api-docs.md", "uptime-sla.md"]
@@ -87,8 +67,13 @@ class RAGPipeline:
             self.embedder.compute_idf(all_chunks)
             self.idf = self.embedder.idf
         self.vocab = self.embedder.vocabulary
-        self.embeddings = [self.embedder.embed(chunk) for chunk in self.chunks]
+        embeddings = [self.embedder.embed(chunk) for chunk in self.chunks]
+        self._store_index(embeddings)
         return len(self.chunks)
+
+    def _store_index(self, embeddings: list) -> None:
+        """Persist chunk embeddings. Default: keep in memory. Override for external stores."""
+        self.embeddings = embeddings
 
     def _retrieve(self, question, top_k):
         if hasattr(self.embedder, "tfidf_embed"):
@@ -99,9 +84,8 @@ class RAGPipeline:
         retrieved_list = []
         for idx, score in search(query_emb, self.embeddings, top_k):
             meta = self.metadatas[idx] if idx < len(self.metadatas) else {}
-            chunk_text = meta.get("parent_chunk", self.chunks[idx])
             retrieved_list.append({
-                "chunk": chunk_text,
+                "chunk": meta.get("parent_chunk", self.chunks[idx]),
                 "score": score,
                 "source": self.sources[idx],
                 "chunk_position": meta.get("chunk_position", "unknown"),

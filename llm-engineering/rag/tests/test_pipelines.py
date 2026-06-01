@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 from rag.generators.simple import SimpleGenerator
+from rag.embeddings import BinaryBOWEmbeder, BM25Embeder
 from rag.pipeline import RAGPipeline, HybridRAGPipeline
 
 SAMPLE_DOCS = [
@@ -30,7 +31,7 @@ class TestSimpleGenerator(unittest.TestCase):
 class TestRAGPipeline(unittest.TestCase):
 
     def setUp(self):
-        self.pipeline = RAGPipeline(chunk_size=30, overlap=5, top_k=3, generator_type="simple", embedder_type="tfidf")
+        self.pipeline = RAGPipeline(chunk_size=30, overlap=5, top_k=3)
         self.pipeline.index(SAMPLE_DOCS)
 
     def test_index_returns_positive_chunk_count(self):
@@ -54,12 +55,12 @@ class TestRAGPipeline(unittest.TestCase):
             self.assertIn(key, result)
 
     def test_bow_embedder_type(self):
-        p = RAGPipeline(chunk_size=30, overlap=5, embedder_type="bow")
+        p = RAGPipeline(embedder=BinaryBOWEmbeder(), chunk_size=30, overlap=5)
         p.index(SAMPLE_DOCS)
         self.assertEqual(len(p._retrieve("refund", top_k=1)), 1)
 
     def test_bm25_embedder_type(self):
-        p = RAGPipeline(chunk_size=30, overlap=5, embedder_type="bm25")
+        p = RAGPipeline(embedder=BM25Embeder(), chunk_size=30, overlap=5)
         p.index(SAMPLE_DOCS)
         self.assertEqual(len(p._retrieve("encryption security", top_k=2)), 2)
 
@@ -74,20 +75,19 @@ class TestHybridRAGPipeline(unittest.TestCase):
 
     def setUp(self):
         self.pipeline = HybridRAGPipeline(
-            chunk_size=30, overlap=5, top_k=3, generator_type="simple",
-            dense_embedder_type="bow", sparse_embedder_type="bow",
-            use_reranker=False, use_hyde=False, verbose=False,
+            sparse_embedder=BinaryBOWEmbeder(), dense_embedder=BinaryBOWEmbeder(),
+            chunk_size=30, overlap=5, top_k=3, use_reranker=False, use_hyde=False, verbose=False,
         )
         self.pipeline.index(SAMPLE_DOCS)
 
     def test_index_returns_positive_chunk_count(self):
-        self.assertGreater(HybridRAGPipeline(dense_embedder_type="bow", sparse_embedder_type="bow", use_reranker=False, use_hyde=False, verbose=False).index(SAMPLE_DOCS), 0)
+        self.assertGreater(HybridRAGPipeline(sparse_embedder=BinaryBOWEmbeder(), dense_embedder=BinaryBOWEmbeder(), use_reranker=False, use_hyde=False, verbose=False).index(SAMPLE_DOCS), 0)
 
     def test_retrieve_returns_results(self):
         self.assertGreater(len(self.pipeline._retrieve("refund", top_k=2)), 0)
 
     def test_reranker_called_when_enabled(self):
-        p = HybridRAGPipeline(chunk_size=30, overlap=5, top_k=3, dense_embedder_type="bow", sparse_embedder_type="bow", use_reranker=True, use_hyde=False, verbose=False)
+        p = HybridRAGPipeline(sparse_embedder=BinaryBOWEmbeder(), dense_embedder=BinaryBOWEmbeder(), chunk_size=30, overlap=5, top_k=3, use_reranker=True, use_hyde=False, verbose=False)
         p.index(SAMPLE_DOCS)
         mock_reranker = MagicMock()
         mock_reranker.rerank.return_value = [(0, 1.0)]

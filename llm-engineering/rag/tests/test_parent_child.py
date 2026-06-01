@@ -1,6 +1,7 @@
 import unittest
 from rag.chunker import ParentChildChunker
 from rag.pipeline import RAGPipeline, ChromaRAGPipeline
+from rag.pipeline.factory import build_pipeline
 
 
 class TestParentChildChunking(unittest.TestCase):
@@ -19,7 +20,7 @@ class TestParentChildChunking(unittest.TestCase):
 
     def test_in_memory_pipeline_with_parent_child(self):
         documents = ["This is a long document containing a section about refund policies. The refund policy is standard. All plans receive refunds within 30 days."]
-        pipeline = RAGPipeline(chunk_size=20, overlap=5, top_k=1, embedder_type="tfidf", chunker_type="parent_child")
+        pipeline = build_pipeline(chunker="parent_child", chunk_size=20, overlap=5, top_k=1)
         num_chunks = pipeline.index(documents)
         self.assertGreater(num_chunks, 1)
         results = pipeline._retrieve("refund policy", top_k=1)
@@ -28,7 +29,11 @@ class TestParentChildChunking(unittest.TestCase):
 
     def test_chroma_pipeline_with_parent_child(self):
         documents = ["This is a long document containing a section about refund policies. The refund policy is standard. All plans receive refunds within 30 days."]
-        pipeline = ChromaRAGPipeline(chunk_size=20, overlap=5, top_k=1, collection_name="parent_child_test", chunker_type="parent_child")
+        pipeline = ChromaRAGPipeline(
+            collection_name="parent_child_test",
+            chunker=ParentChildChunker(parent_size=20, parent_overlap=5, child_size=32, child_overlap=5),
+            top_k=1,
+        )
         num_chunks = pipeline.index(documents)
         self.assertGreater(num_chunks, 1)
         results = pipeline._retrieve("refund policy", top_k=1)

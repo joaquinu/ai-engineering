@@ -29,9 +29,10 @@ class TestHyDE(unittest.TestCase):
         mock_generator_class.return_value = mock_generator
         mock_generator.hyde_with_llm.return_value = "Simulated hypothetical document"
 
+        from rag.embeddings import BinaryBOWEmbeder
         pipeline = HybridRAGPipeline(
-            use_hyde=True, use_reranker=False,
-            dense_embedder_type="bow", sparse_embedder_type="bow", verbose=False,
+            sparse_embedder=BinaryBOWEmbeder(), dense_embedder=BinaryBOWEmbeder(),
+            use_hyde=True, use_reranker=False, verbose=False,
         )
         pipeline.sparse_embedder = MagicMock()
         pipeline.dense_embedder = MagicMock()

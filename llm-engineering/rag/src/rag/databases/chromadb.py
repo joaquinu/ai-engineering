@@ -17,6 +17,19 @@ class ChromaDB(Database):
     def query(self, query_text, n_results=100):
         return self.collection.query(query_texts=[query_text], n_results=n_results)
 
+    def search(self, query_text: str, n_results: int = 5) -> list[dict]:
+        raw = self.query(query_text, n_results)
+        if not raw or not raw.get("documents"):
+            return []
+        docs = raw["documents"][0]
+        ids = raw["ids"][0]
+        metas = (raw.get("metadatas") or [[None] * len(docs)])[0]
+        dists = (raw.get("distances") or [[0.0] * len(docs)])[0]
+        return [
+            {"id": c_id, "document": doc, "score": 1 - dist if dist <= 1.0 else 0.0, "metadata": meta or {}}
+            for doc, c_id, meta, dist in zip(docs, ids, metas, dists)
+        ]
+
     def delete(self, ids):
         self.collection.delete(ids=ids)
 

@@ -14,6 +14,12 @@ class QdrantDB(Database):
     def query(self, query_text, n_results=100):
         return self.client.query(collection_name=self.collection_name, query_text=query_text, limit=n_results)
 
+    def search(self, query_text: str, n_results: int = 5) -> list[dict]:
+        return [
+            {"id": r.id, "document": r.document, "score": r.score, "metadata": r.metadata or {}}
+            for r in self.query(query_text, n_results)
+        ]
+
     def delete(self, ids):
         self.client.delete(collection_name=self.collection_name, points_selector=ids)
 

@@ -7,40 +7,35 @@ Run:
     rag-mcp
 
 Add to claude_desktop_config.json:
-    {
-      "mcpServers": {
-        "rag": {
-          "command": "rag-mcp"
-        }
-      }
-    }
+    {"mcpServers": {"rag": {"command": "rag-mcp"}}}
 """
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
-from rag.pipeline import RAGPipeline
+from rag.pipeline.base import RAGPipeline
 
-# Single shared in-memory pipeline (swap for persistent store in production)
 _pipeline: RAGPipeline | None = None
 
 
-def _ensure_pipeline(pipeline_type: str = "simple", **kwargs) -> RAGPipeline:
+def _ensure_pipeline(pipeline_type: str = "simple", embedder_type: str = "tfidf",
+                     generator_type: str = "simple") -> RAGPipeline:
     global _pipeline
     if _pipeline is None:
+        from rag.pipeline.factory import build_pipeline, build_hybrid_pipeline, _make_generator
         if pipeline_type == "chroma":
-            from rag.pipeline import ChromaRAGPipeline
-            _pipeline = ChromaRAGPipeline(**kwargs)
+            from rag.databases.chromadb import ChromaDB
+            from rag.pipeline.vectordb import VectorDBPipeline
+            _pipeline = VectorDBPipeline(db=ChromaDB("mcp_collection"),
+                                         generator=_make_generator(generator_type))
         elif pipeline_type == "hybrid":
-            from rag.pipeline import HybridRAGPipeline
-            _pipeline = HybridRAGPipeline(**kwargs)
+            _pipeline = build_hybrid_pipeline(generator=generator_type)
         else:
-            _pipeline = RAGPipeline(**kwargs)
+            _pipeline = build_pipeline(embedder=embedder_type, generator=generator_type)
     return _pipeline
 
 
@@ -52,54 +47,27 @@ async def list_tools() -> list[Tool]:
     return [
         Tool(
             name="index_documents",
-            description=(
-                "Index a list of text documents into the RAG pipeline so they can be queried. "
-                "Returns the number of chunks stored."
-            ),
+            description="Index a list of text documents into the RAG pipeline so they can be queried.",
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "documents": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "List of document texts to index.",
-                    },
-                    "source_names": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Optional display names for each document (same length as documents).",
-                    },
-                    "pipeline_type": {
-                        "type": "string",
-                        "enum": ["simple", "chroma", "hybrid"],
-                        "default": "simple",
-                        "description": "Which pipeline backend to use.",
-                    },
-                    "embedder_type": {
-                        "type": "string",
-                        "enum": ["tfidf", "bow", "bm25", "sentence_transformers"],
-                        "default": "tfidf",
-                    },
-                    "generator_type": {
-                        "type": "string",
-                        "enum": ["simple", "claude"],
-                        "default": "simple",
-                    },
+                    "documents": {"type": "array", "items": {"type": "string"}},
+                    "source_names": {"type": "array", "items": {"type": "string"}},
+                    "pipeline_type": {"type": "string", "enum": ["simple", "chroma", "hybrid"], "default": "simple"},
+                    "embedder_type": {"type": "string", "enum": ["tfidf", "bow", "bm25", "sentence_transformers"], "default": "tfidf"},
+                    "generator_type": {"type": "string", "enum": ["simple", "claude"], "default": "simple"},
                 },
                 "required": ["documents"],
             },
         ),
         Tool(
             name="query",
-            description=(
-                "Ask a question against the indexed documents. "
-                "Returns the answer and the retrieved source chunks."
-            ),
+            description="Ask a question against the indexed documents.",
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "question": {"type": "string", "description": "The question to answer."},
-                    "top_k": {"type": "integer", "default": 5, "description": "Number of chunks to retrieve."},
+                    "question": {"type": "string"},
+                    "top_k": {"type": "integer", "default": 5},
                 },
                 "required": ["question"],
             },
@@ -117,28 +85,20 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
     global _pipeline
 
     if name == "index_documents":
-        documents = arguments["documents"]
-        source_names = arguments.get("source_names")
-        pipeline_type = arguments.get("pipeline_type", "simple")
-        embedder_type = arguments.get("embedder_type", "tfidf")
-        generator_type = arguments.get("generator_type", "simple")
         pipeline = _ensure_pipeline(
-            pipeline_type=pipeline_type,
-            embedder_type=embedder_type,
-            generator_type=generator_type,
+            pipeline_type=arguments.get("pipeline_type", "simple"),
+            embedder_type=arguments.get("embedder_type", "tfidf"),
+            generator_type=arguments.get("generator_type", "simple"),
         )
-        n = pipeline.index(documents, source_names)
-        return [TextContent(type="text", text=f"Indexed {n} chunks from {len(documents)} document(s).")]
+        n = pipeline.index(arguments["documents"], arguments.get("source_names"))
+        return [TextContent(type="text", text=f"Indexed {n} chunks from {len(arguments['documents'])} document(s).")]
 
     if name == "query":
         if _pipeline is None:
             return [TextContent(type="text", text="No documents indexed yet. Call index_documents first.")]
-        question = arguments["question"]
-        top_k = arguments.get("top_k", 5)
-        result = _pipeline.query(question, top_k=top_k)
+        result = _pipeline.query(arguments["question"], top_k=arguments.get("top_k", 5))
         sources = [f"[{r['source']} {r['chunk_position']}] (score={r['score']:.3f})" for r in result["retrieved"]]
-        output = f"Answer: {result['answer']}\n\nSources:\n" + "\n".join(sources)
-        return [TextContent(type="text", text=output)]
+        return [TextContent(type="text", text=f"Answer: {result['answer']}\n\nSources:\n" + "\n".join(sources))]
 
     if name == "clear_index":
         _pipeline = None

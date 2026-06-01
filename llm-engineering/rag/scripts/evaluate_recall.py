@@ -1,5 +1,5 @@
 from rag.sample_documents import SAMPLE_DOCUMENTS
-from rag.pipeline import RAGPipeline, ChromaRAGPipeline
+from rag.pipeline import build_pipeline
 from rag.evaluation import evaluate_retrieval_recall
 
 EVAL_SET = [
@@ -11,9 +11,23 @@ EVAL_SET = [
 ]
 
 if __name__ == "__main__":
-    pipeline = RAGPipeline(embedder_type="tfidf")
+    pipeline = build_pipeline(embedder="tfidf")
     pipeline.index(SAMPLE_DOCUMENTS)
-    avg_recall, results = evaluate_retrieval_recall(EVAL_SET, pipeline._retrieve)
+
+    def get_indices(question, k):
+        """Adapter to convert _retrieve results (dicts) to (index, score) tuples."""
+        results = pipeline._retrieve(question, top_k=k)
+        # Extract chunk_index from metadata if available, otherwise use source doc index
+        indices = []
+        for result in results:
+            if "chunk_index" in result:
+                idx = result["chunk_index"]
+            else:
+                idx = SAMPLE_DOCUMENTS.index(result["chunk"]) if result["chunk"] in SAMPLE_DOCUMENTS else 0
+            indices.append((idx, result["score"]))
+        return indices
+
+    avg_recall, results = evaluate_retrieval_recall(EVAL_SET, get_indices)
     print(f"Average Recall@5: {avg_recall:.3f}")
     for r in results:
         print(f"  [{r['recall']:.2f}] {r['query'][:60]}")

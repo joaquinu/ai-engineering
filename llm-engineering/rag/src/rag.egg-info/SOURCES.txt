@@ -1,7 +1,12 @@
 pyproject.toml
 src/rag/__init__.py
 src/rag/api.py
+src/rag/chunker.py
+src/rag/evaluation.py
 src/rag/mcp_server.py
+src/rag/prompts.py
+src/rag/retrieval.py
+src/rag/sample_documents.py
 src/rag/tools.py
 src/rag.egg-info/PKG-INFO
 src/rag.egg-info/SOURCES.txt
@@ -29,9 +34,11 @@ src/rag/pipeline/__init__.py
 src/rag/pipeline/base.py
 src/rag/pipeline/chromadb.py
 src/rag/pipeline/conversational.py
+src/rag/pipeline/factory.py
 src/rag/pipeline/hybrid.py
 src/rag/pipeline/postgres.py
 src/rag/pipeline/qdrant.py
+src/rag/pipeline/vectordb.py
 src/rag/reranker/__init__.py
 src/rag/reranker/base.py
 src/rag/reranker/cohere.py

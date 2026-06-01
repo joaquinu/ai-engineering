@@ -105,11 +105,12 @@ class TestPostgresDBLive(unittest.TestCase):
 class TestPostgresRAGPipeline(unittest.TestCase):
 
     def setUp(self):
+        from rag.embeddings import BinaryBOWEmbeder
         self.patcher = patch("rag.pipeline.postgres.PostgresDB")
         self.mock_db_class = self.patcher.start()
         self.mock_db = MagicMock()
         self.mock_db_class.return_value = self.mock_db
-        self.pipeline = PostgresRAGPipeline(chunk_size=30, overlap=5, top_k=2, generator_type="simple", embedder_type="bow", collection_name="mock_collection", verbose=False)
+        self.pipeline = PostgresRAGPipeline(embedder=BinaryBOWEmbeder(), chunk_size=30, overlap=5, top_k=2, collection_name="mock_collection", verbose=False)
 
     def tearDown(self):
         self.patcher.stop()

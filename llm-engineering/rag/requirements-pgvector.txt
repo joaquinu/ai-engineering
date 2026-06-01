@@ -1,0 +1,6 @@
+anthropic
+scikit-learn
+psycopg2-binary
+pgvector
+fastapi>=0.111
+uvicorn[standard]>=0.29

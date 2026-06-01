@@ -3,7 +3,7 @@ from rag.generators.base import Generator
 
 
 class ClaudeGenerator(Generator):
-    def __init__(self, model="claude-3-5-haiku-20241022"):
+    def __init__(self, model="claude-haiku-4-5-20251001"):
         super().__init__()
         self.model = model
         try:

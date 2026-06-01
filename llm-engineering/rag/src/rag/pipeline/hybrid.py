@@ -1,51 +1,44 @@
 import concurrent.futures
 from rag.pipeline.base import RAGPipeline
 from rag.retrieval import reciprocal_rank_fusion, search
-from rag.embeddings import BM25Embeder
+from rag.embeddings.base import Embeder
+from rag.generators.base import Generator
+from rag.reranker.base import Reranker
+from rag.chunker import Chunker, ParentChildChunker
 
 
 class HybridRAGPipeline(RAGPipeline):
-    def __init__(self, chunk_size=512, overlap=50, top_k=5, generator_type="simple", rrf_k=60,
-                 sparse_embedder_type="bm25", dense_embedder_type="sentence_transformers",
-                 use_reranker=True, use_hyde=True, reranker_type="simple", verbose=True):
-        super().__init__(chunk_size=chunk_size, overlap=overlap, top_k=top_k, generator_type=generator_type)
-        self.use_hyde = use_hyde
-        self.verbose = verbose
-        self.sparse_embedder_type = sparse_embedder_type
-        self.dense_embedder_type = dense_embedder_type
+    def __init__(
+        self,
+        sparse_embedder: Embeder | None = None,
+        dense_embedder: Embeder | None = None,
+        generator: Generator | None = None,
+        chunker: Chunker | ParentChildChunker | None = None,
+        reranker: Reranker | None = None,
+        *,
+        top_k: int = 5,
+        chunk_size: int = 512,
+        overlap: int = 50,
+        rrf_k: int = 60,
+        use_reranker: bool = True,
+        use_hyde: bool = True,
+        verbose: bool = True,
+    ):
+        from rag.embeddings import BM25Embeder, SentenceTransformerEmbeder
+
+        super().__init__(generator=generator, chunker=chunker, top_k=top_k,
+                         chunk_size=chunk_size, overlap=overlap)
+
+        self.sparse_embedder = sparse_embedder or BM25Embeder()
+        self.dense_embedder = dense_embedder or SentenceTransformerEmbeder()
+        self.embedder = self.sparse_embedder  # base-class compat
+        self.reranker = reranker or Reranker()
         self.rrf_k = rrf_k
         self.use_reranker = use_reranker
-
-        if sparse_embedder_type == "bow":
-            from rag.embeddings import BinaryBOWEmbeder
-            self.sparse_embedder = BinaryBOWEmbeder(self.chunker)
-        elif sparse_embedder_type == "tfidf":
-            from rag.embeddings import TFIDFEmbeder
-            self.sparse_embedder = TFIDFEmbeder(self.chunker)
-        else:
-            self.sparse_embedder = BM25Embeder(self.chunker)
-
-        if dense_embedder_type == "bow":
-            from rag.embeddings import BinaryBOWEmbeder
-            self.dense_embedder = BinaryBOWEmbeder(self.chunker)
-        elif dense_embedder_type == "tfidf":
-            from rag.embeddings import TFIDFEmbeder
-            self.dense_embedder = TFIDFEmbeder(self.chunker)
-        else:
-            from rag.embeddings import SentenceTransformerEmbeder
-            self.dense_embedder = SentenceTransformerEmbeder(self.chunker)
-
-        self.embedder = self.sparse_embedder
-
-        if reranker_type == "cohere":
-            from rag.reranker import CohereReranker
-            self.reranker = CohereReranker()
-        else:
-            from rag.reranker import Reranker
-            self.reranker = Reranker()
-
-        self.sparse_embeddings = []
-        self.dense_embeddings = []
+        self.use_hyde = use_hyde
+        self.verbose = verbose
+        self.sparse_embeddings: list = []
+        self.dense_embeddings: list = []
 
     def index(self, documents, source_names=None):
         all_chunks, sources, metadatas = self._prepare_chunks_and_sources(documents, source_names)
@@ -74,27 +67,23 @@ class HybridRAGPipeline(RAGPipeline):
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
             f_sparse = ex.submit(self.sparse_embedder.embed, retrieval_query)
             f_dense = ex.submit(self.dense_embedder.embed, retrieval_query)
-            sparse_query_emb = f_sparse.result()
-            dense_query_emb = f_dense.result()
+            sparse_query_emb, dense_query_emb = f_sparse.result(), f_dense.result()
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
-            f_sparse_s = ex.submit(search, sparse_query_emb, self.sparse_embeddings, 50)
-            f_dense_s = ex.submit(search, dense_query_emb, self.dense_embeddings, 50)
-            sparse_raw = f_sparse_s.result()
-            dense_raw = f_dense_s.result()
+            sparse_raw = ex.submit(search, sparse_query_emb, self.sparse_embeddings, 50).result()
+            dense_raw = ex.submit(search, dense_query_emb, self.dense_embeddings, 50).result()
 
         fused = reciprocal_rank_fusion([dense_raw, sparse_raw], k=self.rrf_k)
 
         if self.use_reranker:
             fused = self.reranker.rerank(question, fused, self.chunks)
 
-        retrieved_list = []
-        for idx, score in fused[:top_k]:
-            meta = self.metadatas[idx] if idx < len(self.metadatas) else {}
-            retrieved_list.append({
+        return [
+            {
                 "chunk": self.chunks[idx],
                 "score": score,
                 "source": self.sources[idx],
-                "chunk_position": meta.get("chunk_position", "unknown"),
-            })
-        return retrieved_list
+                "chunk_position": (self.metadatas[idx] if idx < len(self.metadatas) else {}).get("chunk_position", "unknown"),
+            }
+            for idx, score in fused[:top_k]
+        ]

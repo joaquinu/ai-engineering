@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: rag
+Version: 0.1.0
+Requires-Python: >=3.11
+Requires-Dist: anthropic
+Requires-Dist: openai
+Requires-Dist: cohere
+Requires-Dist: chromadb
+Requires-Dist: qdrant-client
+Requires-Dist: sentence-transformers
+Requires-Dist: psycopg2-binary
+Requires-Dist: pgvector
+Provides-Extra: api
+Requires-Dist: fastapi>=0.111; extra == "api"
+Requires-Dist: uvicorn[standard]>=0.29; extra == "api"
+Provides-Extra: mcp
+Requires-Dist: mcp>=1.0; extra == "mcp"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: httpx; extra == "dev"

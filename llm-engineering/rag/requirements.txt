@@ -1,0 +1,22 @@
+# LLM / AI providers
+anthropic
+openai
+cohere
+
+# Vector databases
+chromadb
+qdrant-client
+
+# Embeddings
+sentence-transformers
+
+# PostgreSQL + pgvector
+psycopg2-binary
+pgvector
+
+# API service
+fastapi>=0.111
+uvicorn[standard]>=0.29
+
+# MCP server
+mcp>=1.0

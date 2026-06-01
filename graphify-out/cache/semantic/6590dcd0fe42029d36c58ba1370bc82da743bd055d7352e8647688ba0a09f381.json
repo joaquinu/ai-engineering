@@ -1,0 +1,1 @@
+{"nodes": [{"id": "embeddings_base_Embeder", "label": "Embeder Base Class", "file_type": "code", "source_file": "llm-engineering/rag/src/rag/embeddings/base.py", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

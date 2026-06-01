@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic",
+    "openai",
+    "cohere",
+    "chromadb",
+    "qdrant-client",
+    "sentence-transformers",
+    "psycopg2-binary",
+    "pgvector",
+]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.111", "uvicorn[standard]>=0.29"]
+mcp = ["mcp>=1.0"]
+dev = ["pytest", "httpx"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+rag-api = "rag.api:main"
+rag-mcp = "rag.mcp_server:main"

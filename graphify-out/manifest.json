@@ -1,0 +1,267 @@
+{
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_chunker.py": {
+    "mtime": 1780333297.1439698,
+    "ast_hash": "5baf295e211c587884abebb306d87a66",
+    "semantic_hash": "5baf295e211c587884abebb306d87a66"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_conversational.py": {
+    "mtime": 1780333282.5080547,
+    "ast_hash": "508e1860314c5fd8365436bb01252208",
+    "semantic_hash": "508e1860314c5fd8365436bb01252208"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_embedders.py": {
+    "mtime": 1780333172.919583,
+    "ast_hash": "b33dab7889f254104a387c16d6b49e11",
+    "semantic_hash": "b33dab7889f254104a387c16d6b49e11"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_evaluation.py": {
+    "mtime": 1780333208.054492,
+    "ast_hash": "32890784348d3c7a1ed1b1066a69e003",
+    "semantic_hash": "32890784348d3c7a1ed1b1066a69e003"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_hyde.py": {
+    "mtime": 1780333223.5132492,
+    "ast_hash": "bbebe9d515beb1844e8b3e77c633e522",
+    "semantic_hash": "bbebe9d515beb1844e8b3e77c633e522"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_parent_child.py": {
+    "mtime": 1780333231.86977,
+    "ast_hash": "53d35ac82c4709805d5fda59446f21ac",
+    "semantic_hash": "53d35ac82c4709805d5fda59446f21ac"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_pipelines.py": {
+    "mtime": 1780333256.3607943,
+    "ast_hash": "4f65ee5ab7a4e6574109127b3487fb70",
+    "semantic_hash": "4f65ee5ab7a4e6574109127b3487fb70"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_postgres.py": {
+    "mtime": 1780333278.6733046,
+    "ast_hash": "1cb88d6d685dedfb79524799011ebc8d",
+    "semantic_hash": "1cb88d6d685dedfb79524799011ebc8d"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_prompt_builders.py": {
+    "mtime": 1780333199.7241964,
+    "ast_hash": "cfce135a24c578b3c7a9784f9c82c4bd",
+    "semantic_hash": "cfce135a24c578b3c7a9784f9c82c4bd"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_rerankers.py": {
+    "mtime": 1780333215.0601554,
+    "ast_hash": "9fbf2a45b6eee8805fe8d7d338af0fab",
+    "semantic_hash": "9fbf2a45b6eee8805fe8d7d338af0fab"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\tests\\test_retrieval_primitives.py": {
+    "mtime": 1780333186.2272065,
+    "ast_hash": "de8b41a6c0d1c8f1f52f675d742a399a",
+    "semantic_hash": "de8b41a6c0d1c8f1f52f675d742a399a"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\chroma_run.py": {
+    "mtime": 1780333103.145139,
+    "ast_hash": "2cdcc58b521b76aafeb29d104d34bb6a",
+    "semantic_hash": "2cdcc58b521b76aafeb29d104d34bb6a"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\compare_embeddings.py": {
+    "mtime": 1780333110.963494,
+    "ast_hash": "2eb9a3baf42eb8faa19cf6351542e9ea",
+    "semantic_hash": "2eb9a3baf42eb8faa19cf6351542e9ea"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\evaluate_faithfulness_run.py": {
+    "mtime": 1780333118.0910017,
+    "ast_hash": "0ce7850abfe2acd70d0a2f4c4384624e",
+    "semantic_hash": "0ce7850abfe2acd70d0a2f4c4384624e"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\evaluate_recall.py": {
+    "mtime": 1780333115.3529282,
+    "ast_hash": "d780a9d07ad1aee43f7b97cb24c65b67",
+    "semantic_hash": "d780a9d07ad1aee43f7b97cb24c65b67"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\qdrant_run.py": {
+    "mtime": 1780333104.1583004,
+    "ast_hash": "0720701ababf592c13de18a41917b568",
+    "semantic_hash": "0720701ababf592c13de18a41917b568"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\sentence_transformer_run.py": {
+    "mtime": 1780333106.0557268,
+    "ast_hash": "07a8fe877b278190fe471b67a92ec8fc",
+    "semantic_hash": "07a8fe877b278190fe471b67a92ec8fc"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\simple_bm25_run.py": {
+    "mtime": 1780333107.04265,
+    "ast_hash": "630bceee1ff1fa90359ea4e02c040a64",
+    "semantic_hash": "630bceee1ff1fa90359ea4e02c040a64"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\simple_hybrid_run.py": {
+    "mtime": 1780333109.0884569,
+    "ast_hash": "93bdc0e30b93e5f2d320002179f0f4b2",
+    "semantic_hash": "93bdc0e30b93e5f2d320002179f0f4b2"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\scripts\\simple_main.py": {
+    "mtime": 1780333101.698695,
+    "ast_hash": "8012933dd55006f49f6786fe60af553e",
+    "semantic_hash": "8012933dd55006f49f6786fe60af553e"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\__init__.py": {
+    "mtime": 1780332780.9072018,
+    "ast_hash": "5b56f6c145bd75a109ac92ebcd514c39",
+    "semantic_hash": "5b56f6c145bd75a109ac92ebcd514c39"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\api.py": {
+    "mtime": 1780331533.1166654,
+    "ast_hash": "d0ab565cb3108d105904e5c42a87adfd",
+    "semantic_hash": "d0ab565cb3108d105904e5c42a87adfd"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\databases\\__init__.py": {
+    "mtime": 1780332770.5329232,
+    "ast_hash": "02351ea43df63fb52c2c7525c7ac076f",
+    "semantic_hash": "02351ea43df63fb52c2c7525c7ac076f"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\databases\\base.py": {
+    "mtime": 1780331317.451707,
+    "ast_hash": "c059936d6f028ee6831b7d8d9679a4fd",
+    "semantic_hash": "c059936d6f028ee6831b7d8d9679a4fd"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\databases\\chromadb.py": {
+    "mtime": 1780331322.9764054,
+    "ast_hash": "c304be2af957bc1966a278966d180bd0",
+    "semantic_hash": "c304be2af957bc1966a278966d180bd0"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\databases\\postgres.py": {
+    "mtime": 1780331344.847243,
+    "ast_hash": "fcefc55773029a3e7ba45f4afca5f269",
+    "semantic_hash": "fcefc55773029a3e7ba45f4afca5f269"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\databases\\qdrant.py": {
+    "mtime": 1780331328.2060938,
+    "ast_hash": "f10675cbd7984fe60bcbdd12801f2649",
+    "semantic_hash": "f10675cbd7984fe60bcbdd12801f2649"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\demo_runner.py": {
+    "mtime": 1780333097.6004307,
+    "ast_hash": "c3cbb7c88e34f69124c04f300faa11ea",
+    "semantic_hash": "c3cbb7c88e34f69124c04f300faa11ea"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\embeddings\\__init__.py": {
+    "mtime": 1780331388.2814827,
+    "ast_hash": "55fc10a4a42962b64a94627be4507e25",
+    "semantic_hash": "55fc10a4a42962b64a94627be4507e25"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\embeddings\\base.py": {
+    "mtime": 1780331348.1866717,
+    "ast_hash": "b0205b4e00deed19442ab9ff09f720d4",
+    "semantic_hash": "b0205b4e00deed19442ab9ff09f720d4"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\embeddings\\bm25.py": {
+    "mtime": 1780331378.606154,
+    "ast_hash": "4157699135e7161155f568d2b70e9ce9",
+    "semantic_hash": "4157699135e7161155f568d2b70e9ce9"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\embeddings\\bow.py": {
+    "mtime": 1780331364.5187037,
+    "ast_hash": "96cd5e07f6b3c9f52935dffb7a26bf20",
+    "semantic_hash": "96cd5e07f6b3c9f52935dffb7a26bf20"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\embeddings\\sentence_transformers.py": {
+    "mtime": 1780331384.3757753,
+    "ast_hash": "706a86b5b8a46a5e1cd05811686d93b8",
+    "semantic_hash": "706a86b5b8a46a5e1cd05811686d93b8"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\embeddings\\tfidf.py": {
+    "mtime": 1780331356.3147738,
+    "ast_hash": "7e60d1c7918b938b0b470807516371e2",
+    "semantic_hash": "7e60d1c7918b938b0b470807516371e2"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\generators\\__init__.py": {
+    "mtime": 1780331415.3918595,
+    "ast_hash": "f788c5cb0130449530ac5a94e864acfc",
+    "semantic_hash": "f788c5cb0130449530ac5a94e864acfc"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\generators\\base.py": {
+    "mtime": 1780331391.683187,
+    "ast_hash": "59e81021760d91c699e4e17a2fc8de67",
+    "semantic_hash": "59e81021760d91c699e4e17a2fc8de67"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\generators\\claude.py": {
+    "mtime": 1780331408.400941,
+    "ast_hash": "7cbe5e0442c271cbd17d71aa18e9460f",
+    "semantic_hash": "7cbe5e0442c271cbd17d71aa18e9460f"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\generators\\openai.py": {
+    "mtime": 1780331412.5964413,
+    "ast_hash": "875e4f39455fe171f646461c462f37e3",
+    "semantic_hash": "875e4f39455fe171f646461c462f37e3"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\generators\\simple.py": {
+    "mtime": 1780331398.8020906,
+    "ast_hash": "4420fbecca3787708786fd85df7337cc",
+    "semantic_hash": "4420fbecca3787708786fd85df7337cc"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\mcp_server.py": {
+    "mtime": 1780331550.942351,
+    "ast_hash": "aa05a76ec7cdc797f4e5ceacb99e7696",
+    "semantic_hash": "aa05a76ec7cdc797f4e5ceacb99e7696"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\pipeline\\__init__.py": {
+    "mtime": 1780332775.8977413,
+    "ast_hash": "31affb5ae92cb1f155188cb16169b58a",
+    "semantic_hash": "31affb5ae92cb1f155188cb16169b58a"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\pipeline\\base.py": {
+    "mtime": 1780331456.9726813,
+    "ast_hash": "5cbeeb0839e9020504692d62b0bfdf15",
+    "semantic_hash": "5cbeeb0839e9020504692d62b0bfdf15"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\pipeline\\chromadb.py": {
+    "mtime": 1780331465.8034594,
+    "ast_hash": "da7a713d84eb83e10dbab29452da0acd",
+    "semantic_hash": "da7a713d84eb83e10dbab29452da0acd"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\pipeline\\conversational.py": {
+    "mtime": 1780331492.3701625,
+    "ast_hash": "851c5bdb0d3a2096b8b29577a3be26e9",
+    "semantic_hash": "851c5bdb0d3a2096b8b29577a3be26e9"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\pipeline\\hybrid.py": {
+    "mtime": 1780331510.4827704,
+    "ast_hash": "464cb548b080079abbce9446643535b1",
+    "semantic_hash": "464cb548b080079abbce9446643535b1"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\pipeline\\postgres.py": {
+    "mtime": 1780331480.9652758,
+    "ast_hash": "a852f4c4db8231ebbc83d903c8c371d9",
+    "semantic_hash": "a852f4c4db8231ebbc83d903c8c371d9"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\pipeline\\qdrant.py": {
+    "mtime": 1780331471.7802672,
+    "ast_hash": "4e8a4ba0fef12c47d6c700c201c426c5",
+    "semantic_hash": "4e8a4ba0fef12c47d6c700c201c426c5"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\reranker\\__init__.py": {
+    "mtime": 1780332805.7648976,
+    "ast_hash": "2991a8678c0de8d096ed5ec61169f3cc",
+    "semantic_hash": "2991a8678c0de8d096ed5ec61169f3cc"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\reranker\\base.py": {
+    "mtime": 1780331425.280557,
+    "ast_hash": "fef7763f69d37484176c5c9405ddcb43",
+    "semantic_hash": "fef7763f69d37484176c5c9405ddcb43"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\reranker\\cohere.py": {
+    "mtime": 1780331432.3528354,
+    "ast_hash": "a71508701fea4a9ed6d121f09d968bf9",
+    "semantic_hash": "a71508701fea4a9ed6d121f09d968bf9"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\sample_documents.py": {
+    "mtime": 1780333072.980115,
+    "ast_hash": "24a777fe5c0366c26debe0a964a7ea31",
+    "semantic_hash": "24a777fe5c0366c26debe0a964a7ea31"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\src\\rag\\tools.py": {
+    "mtime": 1780331310.11857,
+    "ast_hash": "0ff15e94b9f75ea235d85d5a1b82f1df",
+    "semantic_hash": "0ff15e94b9f75ea235d85d5a1b82f1df"
+  },
+  "C:\\Users\\joaqu\\git\\ai-engineering\\llm-engineering\\rag\\requirements.txt": {
+    "mtime": 1780331559.2303953,
+    "ast_hash": "d84b59e407ff5ce33f33e746c93ea336",
+    "semantic_hash": "d84b59e407ff5ce33f33e746c93ea336"
+  }
+}

@@ -1,0 +1,20 @@
+# Compiled Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+.env.local
+
+# IDE and Editor configs
+.idea/
+.vscode/
+.DS_Store
+llm-engineering/rag/__pycache__/*.pyc

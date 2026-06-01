@@ -1,0 +1,3 @@
+[console_scripts]
+rag-api = rag.api:main
+rag-mcp = rag.mcp_server:main

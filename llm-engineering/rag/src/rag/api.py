@@ -34,8 +34,6 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
                   hybrid_dense_embedder: str = "sentence_transformers",
                   hybrid_rrf_k: int = 60,
                   chunker_type: str = "standard",
-                  parent_size: int | None = None,
-                  parent_overlap: int | None = None,
                   child_size: int | None = None,
                   child_overlap: int | None = None):
     key = f"{pipeline_type}:{collection_name}"
@@ -44,7 +42,6 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
 
         chunker = _make_chunker(
             chunker_type, chunk_size, overlap,
-            parent_size=parent_size, parent_overlap=parent_overlap,
             child_size=child_size, child_overlap=child_overlap,
         )
 
@@ -100,7 +97,6 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
             _pipelines[key] = build_pipeline(
                 embedder=embedder_type, generator=generator_type,
                 chunker=chunker_type, chunk_size=chunk_size, overlap=overlap, top_k=top_k,
-                parent_size=parent_size, parent_overlap=parent_overlap,
                 child_size=child_size, child_overlap=child_overlap,
             )
 
@@ -164,8 +160,6 @@ class IndexRequest(BaseModel):
     hybrid_rrf_k: int = RAGConfig.HYBRID_RRF_K
     # Chunker configuration (optional)
     chunker_type: str = RAGConfig.CHUNKER_TYPE
-    parent_size: int = RAGConfig.PARENT_SIZE
-    parent_overlap: int = RAGConfig.PARENT_OVERLAP
     child_size: int = RAGConfig.CHILD_SIZE
     child_overlap: int = RAGConfig.CHILD_OVERLAP
 
@@ -220,8 +214,6 @@ def index(req: IndexRequest):
             hybrid_dense_embedder=req.hybrid_dense_embedder,
             hybrid_rrf_k=req.hybrid_rrf_k,
             chunker_type=req.chunker_type,
-            parent_size=req.parent_size,
-            parent_overlap=req.parent_overlap,
             child_size=req.child_size,
             child_overlap=req.child_overlap,
         )

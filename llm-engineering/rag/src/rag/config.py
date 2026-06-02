@@ -34,8 +34,6 @@ class RAGConfig:
 
     # Chunker configuration
     CHUNKER_TYPE = os.environ.get("RAG_CHUNKER_TYPE", "standard")
-    PARENT_SIZE = int(os.environ.get("RAG_PARENT_SIZE", "512"))
-    PARENT_OVERLAP = int(os.environ.get("RAG_PARENT_OVERLAP", "50"))
     CHILD_SIZE = int(os.environ.get("RAG_CHILD_SIZE", "128"))
     CHILD_OVERLAP = int(os.environ.get("RAG_CHILD_OVERLAP", "10"))
 
@@ -66,8 +64,8 @@ class RAGConfig:
             })
         if cls.CHUNKER_TYPE == "parent_child":
             config_dict.update({
-                "PARENT_SIZE": cls.PARENT_SIZE,
-                "PARENT_OVERLAP": cls.PARENT_OVERLAP,
+                "PARENT_SIZE": cls.CHUNK_SIZE,
+                "PARENT_OVERLAP": cls.CHUNK_OVERLAP,
                 "CHILD_SIZE": cls.CHILD_SIZE,
                 "CHILD_OVERLAP": cls.CHILD_OVERLAP,
             })

@@ -48,20 +48,16 @@ def _make_chunker(
     chunker_type: str,
     chunk_size: int,
     overlap: int,
-    parent_size: int | None = None,
-    parent_overlap: int | None = None,
     child_size: int | None = None,
     child_overlap: int | None = None,
 ):
     if chunker_type == "parent_child":
         from rag.chunker import ParentChildChunker
-        p_size = parent_size if parent_size is not None else chunk_size
-        p_overlap = parent_overlap if parent_overlap is not None else overlap
-        c_size = child_size if child_size is not None else max(32, p_size // 4)
-        c_overlap = child_overlap if child_overlap is not None else max(5, p_overlap // 5)
+        c_size = child_size if child_size is not None else max(32, chunk_size // 4)
+        c_overlap = child_overlap if child_overlap is not None else max(5, overlap // 5)
         return ParentChildChunker(
-            parent_size=p_size,
-            parent_overlap=p_overlap,
+            parent_size=chunk_size,
+            parent_overlap=overlap,
             child_size=c_size,
             child_overlap=c_overlap,
         )
@@ -76,8 +72,6 @@ def build_pipeline(
     chunk_size: int = 512,
     overlap: int = 50,
     top_k: int = 5,
-    parent_size: int | None = None,
-    parent_overlap: int | None = None,
     child_size: int | None = None,
     child_overlap: int | None = None,
 ) -> "RAGPipeline":
@@ -88,7 +82,6 @@ def build_pipeline(
         generator=_make_generator(generator),
         chunker=_make_chunker(
             chunker, chunk_size, overlap,
-            parent_size=parent_size, parent_overlap=parent_overlap,
             child_size=child_size, child_overlap=child_overlap,
         ),
         top_k=top_k,
@@ -108,8 +101,6 @@ def build_hybrid_pipeline(
     use_reranker: bool = True,
     use_hyde: bool = True,
     verbose: bool = True,
-    parent_size: int | None = None,
-    parent_overlap: int | None = None,
     child_size: int | None = None,
     child_overlap: int | None = None,
 ) -> "HybridRAGPipeline":
@@ -122,7 +113,6 @@ def build_hybrid_pipeline(
         reranker=_make_reranker(reranker),
         chunker=_make_chunker(
             chunker, chunk_size, overlap,
-            parent_size=parent_size, parent_overlap=parent_overlap,
             child_size=child_size, child_overlap=child_overlap,
         ),
         top_k=top_k,

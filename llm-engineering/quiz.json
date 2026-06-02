@@ -1,0 +1,242 @@
+[
+    {
+        "question": "Why is manually reading a few LLM outputs not a reliable evaluation method?",
+        "options": [
+            "It takes too long",
+            "Small samples miss failure modes that only appear at scale, and human judgment is inconsistent across reviewers and sessions",
+            "Manual review is too expensive",
+            "LLM outputs are always correct"
+        ],
+        "correct": 1,
+        "explanation": "Reading 10 outputs shows you 10 points in a distribution. A prompt change might improve 90% of outputs but break 10% of edge cases. Without systematic evaluation, you'll miss the regression until users report it.",
+        "stage": "pre"
+    },
+    {
+        "question": "What is regression testing in the context of LLM applications?",
+        "options": [
+            "Testing linear regression models",
+            "Running a fixed set of test cases after every change (prompt, model, parameters) to ensure quality hasn't degraded",
+            "Testing on the training data",
+            "Measuring model loss during training"
+        ],
+        "correct": 1,
+        "explanation": "Every prompt change, model swap, or temperature tweak changes the output distribution. Regression tests catch cases where a change that improves one area silently degrades another.",
+        "stage": "pre"
+    },
+    {
+        "question": "What is the LLM-as-judge evaluation approach?",
+        "options": [
+            "Having the model evaluate its own training loss",
+            "Using a strong LLM to score outputs against rubrics, replacing expensive human evaluation while scaling to thousands of test cases",
+            "Using the model's confidence scores",
+            "Comparing two models' parameter counts"
+        ],
+        "correct": 1,
+        "explanation": "LLM-as-judge sends (input, output, rubric) to a strong model (e.g., GPT-4) which scores the output. It's cheaper and faster than human evaluation, though it has known biases (e.g., preferring verbose responses).",
+        "stage": "post"
+    },
+    {
+        "question": "What makes a good evaluation dataset for an LLM application?",
+        "options": [
+            "As many examples as possible",
+            "Diverse inputs covering common cases, edge cases, adversarial inputs, and expected outputs with clear rubrics",
+            "Only the hardest examples",
+            "Random samples from the internet"
+        ],
+        "correct": 1,
+        "explanation": "A good eval set covers the distribution: happy path cases, edge cases (empty input, very long input), adversarial inputs (prompt injection), and ambiguous queries. Each example has a clear expected output or scoring rubric.",
+        "stage": "post"
+    },
+    {
+        "question": "How should you handle non-deterministic LLM outputs in evaluation?",
+        "options": [
+            "Set temperature to 0 for all evaluations",
+            "Run each test case multiple times and use aggregate metrics (pass rate, average score) to account for output variance",
+            "Non-determinism doesn't affect evaluation",
+            "Only evaluate the first output"
+        ],
+        "correct": 1,
+        "explanation": "Even at temperature 0, some providers introduce sampling variation. Running each test 3-5 times and measuring pass rate or average score gives a more reliable picture than a single run that might hit a lucky/unlucky sample.",
+        "stage": "post"
+    },
+    {
+        "question": "What problem do embeddings solve that keyword search cannot?",
+        "options": [
+            "Embeddings are faster",
+            "Embeddings capture semantic meaning, matching 'payment didn't go through' with 'charge was declined' even though they share no words",
+            "Embeddings use less storage",
+            "Embeddings work offline"
+        ],
+        "correct": 1,
+        "explanation": "Keyword search treats words as independent symbols. Embeddings map text to high-dimensional vectors where semantic similarity = geometric proximity. Texts with the same meaning cluster together regardless of word choice.",
+        "stage": "pre"
+    },
+    {
+        "question": "What does cosine similarity measure between two embedding vectors?",
+        "options": [
+            "The Euclidean distance",
+            "The angle between the vectors, indicating how similar their directions are regardless of magnitude",
+            "The sum of their components",
+            "The number of matching dimensions"
+        ],
+        "correct": 1,
+        "explanation": "Cosine similarity = dot(A,B) / (|A|*|B|). It ranges from -1 (opposite) to 1 (identical direction). Two texts with the same meaning will have vectors pointing in nearly the same direction, giving cosine similarity near 1.",
+        "stage": "pre"
+    },
+    {
+        "question": "What is the typical dimensionality of modern text embedding models?",
+        "options": [
+            "2-10 dimensions",
+            "50-100 dimensions",
+            "768-3072 dimensions",
+            "100,000+ dimensions"
+        ],
+        "correct": 2,
+        "explanation": "Modern embedding models (OpenAI text-embedding-3, BGE, E5) produce vectors with 768 to 3072 dimensions. Higher dimensions capture more nuance but cost more to store and search.",
+        "stage": "post"
+    },
+    {
+        "question": "Why should you evaluate embedding quality using retrieval benchmarks rather than just inspecting similarity scores?",
+        "options": [
+            "Similarity scores are always wrong",
+            "Absolute similarity values vary by model; what matters is whether relevant documents rank higher than irrelevant ones (precision@k, recall)",
+            "Retrieval benchmarks are faster",
+            "Similarity scores don't use cosine distance"
+        ],
+        "correct": 1,
+        "explanation": "A cosine similarity of 0.85 might mean 'very similar' for one model and 'somewhat similar' for another. Retrieval metrics (precision@k, recall) measure what actually matters: does the right document come back?",
+        "stage": "post"
+    },
+    {
+        "question": "When would you use a local/open-source embedding model instead of an API-based one?",
+        "options": [
+            "Local models are always better",
+            "When you need data privacy, offline operation, lower cost at scale, or domain-specific fine-tuning",
+            "Local models produce higher quality embeddings",
+            "API models don't support batching"
+        ],
+        "correct": 1,
+        "explanation": "API embeddings (OpenAI, Cohere) are easy but send your data externally. Local models (BGE, E5, Nomic) keep data private, eliminate per-call costs at scale, and can be fine-tuned on domain-specific data.",
+        "stage": "post"
+    },
+    {
+        "question": "What does RAG stand for and what problem does it solve?",
+        "options": [
+            "Random Augmented Generation -- generating random outputs",
+            "Retrieval-Augmented Generation -- giving LLMs access to external knowledge they weren't trained on",
+            "Recurrent Attention Generation -- improving attention mechanisms",
+            "Reduced Architecture Generation -- making models smaller"
+        ],
+        "correct": 1,
+        "explanation": "RAG retrieves relevant documents from an external knowledge base and adds them to the prompt. This gives the LLM access to up-to-date, domain-specific information without retraining.",
+        "stage": "pre"
+    },
+    {
+        "question": "Why is RAG preferred over fine-tuning for most knowledge-grounded applications?",
+        "options": [
+            "RAG produces better models",
+            "RAG is cheaper, instantly updatable when documents change, and provides source attribution -- fine-tuning is expensive and becomes stale",
+            "Fine-tuning doesn't work",
+            "RAG uses less memory"
+        ],
+        "correct": 1,
+        "explanation": "Fine-tuning costs thousands of dollars, produces a static model that becomes stale as documents change, and offers no source attribution. RAG updates instantly (just update the document store), costs only embedding + storage, and can cite its sources.",
+        "stage": "pre"
+    },
+    {
+        "question": "What is the correct order of steps in a basic RAG pipeline?",
+        "options": [
+            "Generate, retrieve, embed, chunk",
+            "Chunk documents, embed chunks, store in vector DB, embed query, retrieve similar chunks, generate answer with context",
+            "Embed query, generate answer, retrieve documents",
+            "Store documents, query the LLM, add documents to response"
+        ],
+        "correct": 1,
+        "explanation": "Ingestion: chunk documents -> embed chunks -> store in vector DB. Query time: embed the user's query -> retrieve top-K similar chunks -> add chunks to prompt -> generate answer grounded in retrieved context.",
+        "stage": "post"
+    },
+    {
+        "question": "What is a common failure mode in basic RAG systems?",
+        "options": [
+            "The LLM refuses to answer",
+            "The retrieved chunks are semantically similar to the query but don't contain the actual answer (e.g., returning 'revenue strategy' when asked for 'Q3 revenue numbers')",
+            "The vector database crashes",
+            "The embeddings are too large"
+        ],
+        "correct": 1,
+        "explanation": "Semantic search finds text that 'sounds like' the query, not necessarily text that 'answers' it. A query about revenue might retrieve chunks discussing revenue strategy rather than the chunk containing the actual number.",
+        "stage": "post"
+    },
+    {
+        "question": "How do you evaluate RAG quality?",
+        "options": [
+            "By checking if the LLM produces any output",
+            "Using both retrieval metrics (did we find the right chunks?) and generation metrics (is the answer faithful to the retrieved context?)",
+            "By measuring response time only",
+            "By counting the number of retrieved documents"
+        ],
+        "correct": 1,
+        "explanation": "RAG evaluation has two parts: retrieval quality (precision/recall of retrieved chunks against ground truth) and generation quality (faithfulness to context, relevance to query, no hallucination beyond retrieved information).",
+        "stage": "post"
+    },
+    {
+        "question": "What is the limitation of basic top-k semantic search in RAG?",
+        "options": [
+            "It's too slow",
+            "It retrieves chunks that are semantically similar to the query but may not contain the actual answer, especially for ambiguous or multi-hop questions",
+            "It can't handle large documents",
+            "It requires GPU"
+        ],
+        "correct": 1,
+        "explanation": "Basic semantic search matches surface-level meaning. 'What was revenue last quarter?' retrieves chunks about 'revenue strategy' (semantically similar) instead of the chunk saying '$47.2M in Q3 2025' (which uses 'earnings').",
+        "stage": "pre"
+    },
+    {
+        "question": "What is hybrid search in the context of RAG?",
+        "options": [
+            "Using two different LLMs",
+            "Combining BM25 keyword matching with semantic vector search to capture both exact terms and meaning-based relevance",
+            "Searching across multiple databases",
+            "Using both CPU and GPU for search"
+        ],
+        "correct": 1,
+        "explanation": "BM25 catches exact keyword matches (e.g., '$47.2M' or 'Q3'). Semantic search catches meaning matches. Combining them with a reranker gives the best of both worlds: precision on specific terms plus recall on semantic variants.",
+        "stage": "pre"
+    },
+    {
+        "question": "What does a cross-encoder reranker do in an advanced RAG pipeline?",
+        "options": [
+            "It generates the final answer",
+            "It takes (query, document) pairs and scores their relevance with higher accuracy than embedding similarity, reordering the initial retrieval results",
+            "It encodes documents into vectors",
+            "It splits documents into chunks"
+        ],
+        "correct": 1,
+        "explanation": "Bi-encoder similarity (used for initial retrieval) is fast but approximate. A cross-encoder processes the full query-document pair together with cross-attention, giving much more accurate relevance scores for reranking the top candidates.",
+        "stage": "post"
+    },
+    {
+        "question": "What is the HyDE (Hypothetical Document Embedding) query transformation technique?",
+        "options": [
+            "Hiding the query from the model",
+            "Using the LLM to generate a hypothetical answer, then embedding that answer as the search query instead of the original question",
+            "Encrypting the query for privacy",
+            "Expanding abbreviations in the query"
+        ],
+        "correct": 1,
+        "explanation": "The original query 'What was Q3 revenue?' might not embed close to the answer chunk. HyDE asks the LLM to generate a hypothetical answer ('Q3 revenue was approximately...'), then uses that as the search query, which embeds closer to actual answer-containing chunks.",
+        "stage": "post"
+    },
+    {
+        "question": "Why does parent-child chunking improve RAG over flat chunking?",
+        "options": [
+            "It's faster to index",
+            "Small child chunks are used for precise retrieval, but the larger parent chunk is returned for context, preventing the 'lost context' problem",
+            "It reduces the number of chunks",
+            "It eliminates the need for embeddings"
+        ],
+        "correct": 1,
+        "explanation": "Small chunks (200 tokens) embed precisely but lack context. Large chunks (2000 tokens) have context but embed imprecisely. Parent-child uses small chunks for search accuracy but returns the parent chunk for generation context.",
+        "stage": "post"
+    }
+]

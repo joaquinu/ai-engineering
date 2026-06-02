@@ -49,7 +49,21 @@ def main():
                         help="Question to ask the RAG pipeline")
     args = parser.parse_args()
 
-    print("Indexing sample documents via PostgresRAGPipeline (base pipeline + pgvector)...")
+    # Check service configuration first to dynamically display the active pipeline/embedders
+    config_result = get("/config")
+    pipeline_type = config_result.get("DEFAULT_PIPELINE_TYPE", "postgres")
+    embedder_type = config_result.get("DEFAULT_EMBEDDER_TYPE", "tfidf")
+
+    if pipeline_type == "hybrid":
+        sparse = config_result.get("HYBRID_SPARSE_EMBEDDER", "bm25")
+        dense = config_result.get("HYBRID_DENSE_EMBEDDER", "sentence_transformers")
+        pipeline_info = f"HybridRAGPipeline ({sparse} + {dense})"
+    elif pipeline_type == "postgres":
+        pipeline_info = f"PostgresRAGPipeline (base pipeline + pgvector + {embedder_type})"
+    else:
+        pipeline_info = f"{pipeline_type.capitalize()}RAGPipeline ({embedder_type})"
+
+    print(f"Indexing sample documents via {pipeline_info}...")
     print("  Using service defaults (env-configured)...")
     result = post("/index", {
         "documents": DOCUMENTS,
@@ -58,8 +72,6 @@ def main():
     print(f"  Indexed {result['chunks_indexed']} chunks into collection '{result['collection_name']}'")
     print(f"  Pipeline: {result['pipeline_type']}")
 
-    # Check service configuration
-    config_result = get("/config")
     print(f"\nService Configuration:")
     for key, value in config_result.items():
         print(f"  {key}: {value}")

@@ -17,8 +17,8 @@ services:
 
   rag-api:
     build:
-      context: ../../rag
-      dockerfile: ../demo_rag/pgvector_base_rag/Dockerfile
+      context: ../rag
+      dockerfile: ../rag_example/Dockerfile
     ports:
       - "8000:8000"
     env_file:

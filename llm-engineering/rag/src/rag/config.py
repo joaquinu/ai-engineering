@@ -32,6 +32,13 @@ class RAGConfig:
     HYBRID_DENSE_EMBEDDER = os.environ.get("RAG_HYBRID_DENSE_EMBEDDER", "sentence_transformers")  # sentence_transformers
     HYBRID_RRF_K = int(os.environ.get("RAG_HYBRID_RRF_K", "60"))
 
+    # Chunker configuration
+    CHUNKER_TYPE = os.environ.get("RAG_CHUNKER_TYPE", "standard")
+    PARENT_SIZE = int(os.environ.get("RAG_PARENT_SIZE", "512"))
+    PARENT_OVERLAP = int(os.environ.get("RAG_PARENT_OVERLAP", "50"))
+    CHILD_SIZE = int(os.environ.get("RAG_CHILD_SIZE", "128"))
+    CHILD_OVERLAP = int(os.environ.get("RAG_CHILD_OVERLAP", "10"))
+
     # Postgres configuration (used by PostgresDB)
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", "5432")
@@ -42,7 +49,7 @@ class RAGConfig:
     @classmethod
     def to_dict(cls):
         """Return all config as a dictionary."""
-        return {
+        config_dict = {
             "DEFAULT_COLLECTION_NAME": cls.DEFAULT_COLLECTION_NAME,
             "DEFAULT_EMBEDDER_TYPE": cls.DEFAULT_EMBEDDER_TYPE,
             "DEFAULT_GENERATOR_TYPE": cls.DEFAULT_GENERATOR_TYPE,
@@ -50,4 +57,18 @@ class RAGConfig:
             "CHUNK_SIZE": cls.CHUNK_SIZE,
             "CHUNK_OVERLAP": cls.CHUNK_OVERLAP,
             "TOP_K": cls.TOP_K,
+            "CHUNKER_TYPE": cls.CHUNKER_TYPE,
         }
+        if cls.DEFAULT_PIPELINE_TYPE == "hybrid":
+            config_dict.update({
+                "HYBRID_SPARSE_EMBEDDER": cls.HYBRID_SPARSE_EMBEDDER,
+                "HYBRID_DENSE_EMBEDDER": cls.HYBRID_DENSE_EMBEDDER,
+            })
+        if cls.CHUNKER_TYPE == "parent_child":
+            config_dict.update({
+                "PARENT_SIZE": cls.PARENT_SIZE,
+                "PARENT_OVERLAP": cls.PARENT_OVERLAP,
+                "CHILD_SIZE": cls.CHILD_SIZE,
+                "CHILD_OVERLAP": cls.CHILD_OVERLAP,
+            })
+        return config_dict

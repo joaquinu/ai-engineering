@@ -32,10 +32,21 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
                   use_reranker: bool = False, use_hyde: bool = False, verbose: bool = False,
                   hybrid_sparse_embedder: str = "bm25",
                   hybrid_dense_embedder: str = "sentence_transformers",
-                  hybrid_rrf_k: int = 60):
+                  hybrid_rrf_k: int = 60,
+                  chunker_type: str = "standard",
+                  parent_size: int | None = None,
+                  parent_overlap: int | None = None,
+                  child_size: int | None = None,
+                  child_overlap: int | None = None):
     key = f"{pipeline_type}:{collection_name}"
     if key not in _pipelines:
-        from rag.pipeline.factory import build_pipeline, build_hybrid_pipeline, _make_generator
+        from rag.pipeline.factory import build_pipeline, build_hybrid_pipeline, _make_generator, _make_chunker
+
+        chunker = _make_chunker(
+            chunker_type, chunk_size, overlap,
+            parent_size=parent_size, parent_overlap=parent_overlap,
+            child_size=child_size, child_overlap=child_overlap,
+        )
 
         if pipeline_type in ("chroma", "conversational"):
             from rag.databases.chromadb import ChromaDB
@@ -43,7 +54,7 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
             vdb = VectorDBPipeline(
                 db=ChromaDB(collection_name),
                 generator=_make_generator(generator_type),
-                top_k=top_k, chunk_size=chunk_size, overlap=overlap,
+                top_k=top_k, chunker=chunker,
             )
             if pipeline_type == "conversational":
                 from rag.pipeline.conversational import ConversationalRAGPipeline
@@ -57,7 +68,7 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
             _pipelines[key] = VectorDBPipeline(
                 db=QdrantDB(collection_name),
                 generator=_make_generator(generator_type),
-                top_k=top_k, chunk_size=chunk_size, overlap=overlap,
+                top_k=top_k, chunker=chunker,
             )
 
         elif pipeline_type == "postgres":
@@ -67,7 +78,7 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
                 embedder=_make_embedder(embedder_type),
                 generator=_make_generator(generator_type),
                 collection_name=collection_name,
-                top_k=top_k, chunk_size=chunk_size, overlap=overlap,
+                top_k=top_k, chunker=chunker,
             )
 
         elif pipeline_type == "hybrid":
@@ -77,8 +88,7 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
                 sparse_embedder=_make_embedder(hybrid_sparse_embedder),
                 dense_embedder=_make_embedder(hybrid_dense_embedder),
                 generator=_make_generator(generator_type),
-                chunk_size=chunk_size,
-                overlap=overlap,
+                chunker=chunker,
                 top_k=top_k,
                 rrf_k=hybrid_rrf_k,
                 use_reranker=use_reranker,
@@ -89,7 +99,9 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
         else:
             _pipelines[key] = build_pipeline(
                 embedder=embedder_type, generator=generator_type,
-                chunk_size=chunk_size, overlap=overlap, top_k=top_k,
+                chunker=chunker_type, chunk_size=chunk_size, overlap=overlap, top_k=top_k,
+                parent_size=parent_size, parent_overlap=parent_overlap,
+                child_size=child_size, child_overlap=child_overlap,
             )
 
     # Apply global retrieval augmentation wrappers (for non-hybrid pipelines)
@@ -117,7 +129,12 @@ def _get_pipeline(pipeline_type: str, collection_name: str,
             if use_reranker:
                 reranker = Reranker()
                 chunks = [r["chunk"] for r in results]
-                results = reranker.rerank(question, results, chunks)
+                candidates = [(i, r["score"]) for i, r in enumerate(results)]
+                reranked_scores = reranker.rerank(question, candidates, chunks)
+                results = [
+                    {**results[idx], "score": score}
+                    for idx, score in reranked_scores
+                ]
 
             return results[:top_k]
 
@@ -145,6 +162,12 @@ class IndexRequest(BaseModel):
     hybrid_sparse_embedder: str = RAGConfig.HYBRID_SPARSE_EMBEDDER
     hybrid_dense_embedder: str = RAGConfig.HYBRID_DENSE_EMBEDDER
     hybrid_rrf_k: int = RAGConfig.HYBRID_RRF_K
+    # Chunker configuration (optional)
+    chunker_type: str = RAGConfig.CHUNKER_TYPE
+    parent_size: int = RAGConfig.PARENT_SIZE
+    parent_overlap: int = RAGConfig.PARENT_OVERLAP
+    child_size: int = RAGConfig.CHILD_SIZE
+    child_overlap: int = RAGConfig.CHILD_OVERLAP
 
 
 class IndexResponse(BaseModel):
@@ -196,6 +219,11 @@ def index(req: IndexRequest):
             hybrid_sparse_embedder=req.hybrid_sparse_embedder,
             hybrid_dense_embedder=req.hybrid_dense_embedder,
             hybrid_rrf_k=req.hybrid_rrf_k,
+            chunker_type=req.chunker_type,
+            parent_size=req.parent_size,
+            parent_overlap=req.parent_overlap,
+            child_size=req.child_size,
+            child_overlap=req.child_overlap,
         )
         n = pipeline.index(req.documents, req.source_names)
         return IndexResponse(chunks_indexed=n, collection_name=req.collection_name, pipeline_type=req.pipeline_type)
